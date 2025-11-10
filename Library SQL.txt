@@ -1,0 +1,110 @@
+CREATE TABLE users
+(
+  User_id INT NOT NULL,
+  Nama_Panggilan VARCHAR(30) NOT NULL,
+  Nama_Panjang VARCHAR(80) NOT NULL,
+  jenis_kelamin Enum("Laki", "Perempuan") NOT NULL,
+  Kota VARCHAR(100) NOT NULL,
+  Provinsi VARCHAR(100) NOT NULL,
+  Kecamatan VARCHAR(100) NOT NULL,
+  RT INT NOT NULL,
+  RW INT NOT NULL,
+  Denda INT NOT NULL,
+  PRIMARY KEY (User_id)
+);
+
+CREATE TABLE books
+(
+  Book_id INT NOT NULL,
+  judul VARCHAR(100) NOT NULL,
+  isbn VARCHAR(80) NOT NULL,
+  halaman_buku INT NOT NULL,
+  tahun_publikasi DATE NOT NULL,
+  deskripsi text NOT NULL,
+  Kondisi Enum("Sempurna", "Baik", "Buruk", "Rusak", "Hilang") NOT NULL,
+  PRIMARY KEY (Book_id)
+);
+
+CREATE TABLE users_email
+(
+  email VARCHAR(100) NOT NULL,
+  User_id INT NOT NULL,
+  PRIMARY KEY (email, User_id),
+  FOREIGN KEY (User_id) REFERENCES users(User_id)
+);
+
+CREATE TABLE users_nomor_telepon
+(
+  nomor_telepon VARCHAR(20) NOT NULL,
+  User_id INT NOT NULL,
+  PRIMARY KEY (nomor_telepon, User_id),
+  FOREIGN KEY (User_id) REFERENCES users(User_id)
+);
+
+CREATE TABLE books_bahasa
+(
+  bahasa VARCHAR(100) NOT NULL,
+  Book_id INT NOT NULL,
+  PRIMARY KEY (bahasa, Book_id),
+  FOREIGN KEY (Book_id) REFERENCES books(Book_id)
+);
+
+CREATE TABLE books_author
+(
+  author VARCHAR(100) NOT NULL,
+  Book_id INT NOT NULL,
+  PRIMARY KEY (author, Book_id),
+  FOREIGN KEY (Book_id) REFERENCES books(Book_id)
+);
+
+CREATE TABLE books_publisher
+(
+  publisher VARCHAR(100) NOT NULL,
+  Book_id INT NOT NULL,
+  PRIMARY KEY (publisher, Book_id),
+  FOREIGN KEY (Book_id) REFERENCES books(Book_id)
+);
+
+CREATE TABLE books_Genre
+(
+  Genre VARCHAR(100) NOT NULL,
+  Book_id INT NOT NULL,
+  PRIMARY KEY (Genre, Book_id),
+  FOREIGN KEY (Book_id) REFERENCES books(Book_id)
+);
+
+CREATE TABLE copies
+(
+  Book_id INT NOT NULL,
+  Stock INT NOT NULL,
+  Borrow_id INT NOT NULL,
+  Kondisi Enum("Sempurna", "Baik", "Buruk", "Rusak", "Hilang") NOT NULL,
+  Book_id INT NOT NULL,
+  PRIMARY KEY (Book_id),
+  FOREIGN KEY (Book_id) REFERENCES books(Book_id),
+  UNIQUE (Borrow_id)
+);
+
+CREATE TABLE Borrow
+(
+  Borrow_id INT NOT NULL,
+  issue_date DATE NOT NULL,
+  due_date DATE NOT NULL,
+  Kondisi_After Enum("Sempurna", "Baik", "Buruk", "Rusak", "Hilang") NOT NULL,
+  User_id INT NOT NULL,
+  Book_id INT NOT NULL,
+  PRIMARY KEY (Borrow_id),
+  FOREIGN KEY (User_id) REFERENCES users(User_id),
+  FOREIGN KEY (Book_id) REFERENCES copies(Book_id)
+);
+
+CREATE TABLE Update_Kondisi
+(
+  Kondisi_Terkini Enum("Sempurna", "Baik", "Buruk", "Rusak", "Hilang") NOT NULL,
+  Book_id INT NOT NULL,
+  Borrow_id INT NOT NULL,
+  Book_id INT NOT NULL,
+  PRIMARY KEY (Book_id),
+  FOREIGN KEY (Borrow_id) REFERENCES Borrow(Borrow_id),
+  FOREIGN KEY (Book_id) REFERENCES books(Book_id)
+);
