@@ -1,0 +1,354 @@
+--Create (membuat) 
+
+create table users(
+user_id int auto_increment,
+denda int null,
+provinsi varchar(120) not null,
+kota varchar(100) not null,
+kecamatan varchar(100) not null,
+rt smallint not null, 
+rw smallint not null,
+jenis_kelamin enum('laki-laki','perempuan') not null,
+nama_panjang varchar(120) not null,
+nama_panggilan varchar(60) not null,
+primary key (user_id)
+);
+
+create table books(
+book_id int auto_increment, 
+judul varchar(120),
+isbn varchar(100) not null,
+tahun_publikasi date not null, 
+deskripsi text, 
+stock int null, 
+bisa_dipinjam enum('ya', 'tidak') not null,
+kondisi enum ('Sempurna','Baik','Lumayan','Buruk','Rusak','Hilang'),
+primary key (book_id) 
+);
+
+create table books_author(
+author varchar(120),
+book_id int,
+foreign key (book_id) references books(book_id)
+);
+
+create table books_bahasa(
+bahasa varchar(120),
+book_id int,
+foreign key (book_id) references books(book_id)
+);
+
+create table books_publisher(
+publisher varchar(120),
+book_id int,
+foreign key (book_id) references books(book_id)
+);
+
+create table books_genre(
+genre varchar(80), 
+book_id int,
+foreign key (book_id) references books(book_id) 
+);
+
+create table borrow(
+borrow_id int auto_increment,
+issue_date date not null,
+due_date date not null,
+kondisi_after enum ('Sempurna','Baik','Lumayan','Buruk','Rusak','Hilang'),
+book_id int, 
+user_id int, 
+primary key (borrow_id),
+foreign key (user_id) references users(user_id)
+);
+
+create table copies(
+dimpinjam int,  
+borrow_id int,
+book_id int,
+foreign key (book_id) references books(book_id),
+foreign key (borrow_id) references borrow(borrow_id) 
+);
+
+create table users_email(
+email varchar(100) null,
+user_id int, 
+foreign key (user_id) references users(user_id)
+);
+
+create table users_nomor_Telepon(
+nomor_telepon varchar(100) null,
+user_id int, 
+foreign key (user_id) references users(user_id)
+); 
+
+--Inserts 
+INSERT INTO users (denda, provinsi, kota, kecamatan, rt, rw, jenis_kelamin, nama_panjang, nama_panggilan)
+VALUES
+(NULL, 'DIY', 'Yogyakarta', 'Gondokusuman', 55, 12, 'laki-laki', 'Raditya Nathaniel Nugroho', 'Radit'),
+(40000, 'Jawa Tengah', 'Semarang', 'Tembalang', 23, 7, 'perempuan', 'Aurelia Putri Cahyaning', 'Lia'),
+(20000, 'Jawa Barat', 'Bandung', 'Coblong', 12, 4, 'laki-laki', 'Bagas Aditya Pratama', 'Bagas'),
+(NULL, 'DKI Jakarta', 'Jakarta Selatan', 'Tebet', 3, 1, 'perempuan', 'Zahra Annisa Putri', 'Zahra'),
+(NULL, 'Bali', 'Denpasar', 'Denpasar Timur', 21, 9, 'laki-laki', 'I Made Surya Wiguna', 'Surya'),
+(NULL, 'DIY', 'Bantul', 'Kasihan', 7, 4, 'laki-laki', 'Rangga Prasetyo Aji', 'Rangga'),
+(10000, 'Jawa Timur', 'Surabaya', 'Wonokromo', 15, 8, 'perempuan', 'Nadya Salsabila Putri', 'Nadya'),
+(NULL, 'Sumatera Utara', 'Medan', 'Medan Kota', 10, 5, 'laki-laki', 'Andreas Fernando Simanjuntak', 'Andreas'),
+(NULL, 'Kalimantan Timur', 'Balikpapan', 'Balikpapan Selatan', 6, 3, 'perempuan', 'Claudia Joselyn Marbun', 'Claudia'),
+(5000, 'Sulawesi Selatan', 'Makassar', 'Panakkukang', 11, 2, 'laki-laki', 'Muhammad Rizky Ramadhan', 'Rizky');
+
+
+INSERT INTO books 
+(judul, isbn, tahun_publikasi, deskripsi, stock, bisa_dipinjam, kondisi)
+VALUES
+('Laskar Pelangi', '9789793062791', '2005-09-01',
+ 'Novel inspiratif karya Andrea Hirata tentang perjuangan anak-anak Belitung.',
+ 12, 'ya', 'Baik'),
+
+('The Way and Truth', '777777777777', '0000-12-25',
+ 'Sebuah buku yang menceritakan perjalanan hidup seseorang',
+ 7, 'ya', 'Lumayan'),
+
+('Filosofi Kopi', '9789797093890', '2006-02-01',
+ 'Kumpulan cerita pendek Dee Lestari bertema kopi dan kehidupan.',
+ 5, 'ya', 'Sempurna'),
+
+('The Hobbit', '9780547928227', '1937-09-21',
+ 'Kisah petualangan Bilbo Baggins karya J.R.R. Tolkien.',
+ 9, 'ya', 'Baik'),
+
+('Atomic Habits', '9780735211292', '2018-10-16',
+ 'Buku pengembangan diri tentang membangun kebiasaan kecil yang berdampak besar.',
+ 14, 'ya', 'Sempurna'),
+
+('Harry Potter and the Sorcerer''s Stone', '9780590353427', '1997-06-26',
+ 'Buku pertama dari seri Harry Potter yang ditulis oleh J.K. Rowling.',
+ 20, 'ya', 'Baik'),
+
+('To Kill a Mockingbird', '9780061120084', '1960-07-11',
+ 'Novel klasik Amerika tentang moralitas, perbedaan ras, dan keadilan.',
+ 6, 'tidak', 'Rusak'),
+
+('Dune', '9780441013593', '1965-08-01',
+ 'Novel fiksi ilmiah epik karya Frank Herbert tentang politik dan ekologi di planet Arrakis.',
+ 10, 'ya', 'Lumayan'),
+
+('The Great Gatsby', '9780743273565', '1925-04-10',
+ 'Karya F. Scott Fitzgerald yang mengangkat tema ambisi, cinta, dan tragedi.',
+ 4, 'ya', 'Baik'),
+
+('Liberation of Gracemeria', '9766252423234', '2011-01-01',
+ 'menceritakan perjuangan seorang pilot bercallsign "Talisman" yang memperjuangkan kemerdekaan negaranya',
+ 11, 'ya', 'Sempurna');
+
+
+INSERT INTO books_author (author, book_id) VALUES
+('Andrea Hirata', 1),
+('The Great I Am', 2),
+('Dee Lestari', 3),
+('J.R.R. Tolkien', 4),
+('James Clear', 5),
+('J.K. Rowling', 6),
+('Harper Lee', 7),
+('Frank Herbert', 8),
+('F. Scott Fitzgerald', 9),
+('Garuda Squadron', 10);
+
+INSERT INTO books_bahasa (bahasa, book_id) VALUES
+('Indonesia', 1),
+('Ibrani', 2),
+('Indonesia', 3),
+('English', 4),
+('English', 5),
+('High Valerian', 6),
+('English', 7),
+('English', 8),
+('English', 9),
+('Emerian', 10);
+
+INSERT INTO books_publisher (publisher, book_id) VALUES
+('Bentang Pustaka', 1),
+('UNKNOWN', 2),
+('Truedee Books', 3),
+('George Allen & Unwin', 4),
+('Penguin Random House', 5),
+('Bloomsbury', 6),
+('J.B. Lippincott & Co.', 7),
+('Chilton Books', 8),
+('Charles Scribner\'s Sons', 9),
+('Talisman', 10);
+
+INSERT INTO books_genre (genre, book_id) VALUES
+('Drama', 1),
+('REDACTED', 2),
+('Fiksi', 3),
+('Fantasy', 4),
+('Self-Improvement', 5),
+('Fantasy', 6),
+('Classic', 7),
+('Sci-Fi', 8),
+('Classic', 9),
+('Military Fiction', 10);
+
+INSERT INTO users_email (email, user_id) VALUES
+('raditya.nugroho@mail.com', 1),
+('aulia.salsabila@mail.com', 2),
+('budi.santoso@mail.com', 3),
+('siti.nuraini@mail.com', 4),
+('michael.tan@mail.com', 5),
+('linda.wijaya@mail.com', 6),
+('agus.pratama@mail.com', 7),
+('nina.rahma@mail.com', 8),
+('eko.susanto@mail.com', 9),
+('joko.hartono@mail.com', 10);
+
+INSERT INTO users_nomor_telepon (nomor_telepon, user_id) VALUES
+('081234567801', 1),
+('081234567802', 2),
+('081234567803', 3),
+('081234567804', 4),
+('081234567805', 5),
+('081234567806', 6),
+('081234567807', 7),
+('081234567808', 8),
+('081234567809', 9),
+('081234567810', 10);
+
+INSERT INTO borrow (issue_date, due_date, kondisi_after, book_id, user_id) VALUES
+('2025-08-16', '2025-11-23', 'Lumayan', 1, 3),
+('2025-08-16', '2025-11-23', 'Sempurna', 2, 3),
+('2024-02-12', '2025-03-27', 'Rusak', 3, 6),
+('2023-03-30', '2025-04-12', 'Hilang', 4, 2),
+('2024-07-11', '2025-08-21', 'Baik', 7, 9),
+('2022-10-15', '2025-11-23', 'Lumayan', 4, 5),
+('2021-02-17', '2025-03-12', 'Rusak', 1, 3),
+('2024-06-20', '2025-07-05', 'Baik', 10, 7),
+('2025-03-21', '2025-04-09', 'Lumayan', 4, 3),
+('2021-07-23', '2025-08-10', 'Baik', 5, 10);
+
+INSERT INTO copies (dimpinjam, borrow_id, book_id) VALUES
+(1, 1, 1),
+(1, 2, 2),
+(1, 3, 3),
+(1, 4, 4),
+(1, 5, 7),
+(1, 6, 4),
+(1, 7, 1),
+(1, 8, 10),
+(1, 9, 4),
+(1, 10, 5);
+
+
+-- Update / Alter 
+ALTER TABLE borrow
+ADD COLUMN kondisi_before VARCHAR(50);
+
+UPDATE borrow b
+JOIN books bk ON b.book_id = bk.book_id
+SET b.kondisi_before = bk.kondisi;
+
+--tambahkan trigger untuk mengambil kondisi_before untuk borrow dari books.kondisi
+DELIMITER $$
+
+CREATE TRIGGER set_kondisi_before
+BEFORE INSERT ON borrow
+FOR EACH ROW
+BEGIN
+
+DECLARE current_kondisi VARCHAR(50);
+
+SELECT kondisi INTO current_kondisi
+FROM books
+WHERE book_id = NEW.book_id;
+
+SET NEW.kondisi_before = current_kondisi;
+
+END $$
+
+DELIMITER ;
+
+
+--buat copies menjadi lebih bermakna
+ALTER TABLE copies
+ADD COLUMN stock_before INT,
+ADD COLUMN stock_after INT;
+
+
+--Update sekali dulu agar datanya berubah
+UPDATE copies c
+JOIN books b ON c.book_id = b.book_id
+SET 
+c.stock_before = b.stock,
+c.stock_after = b.stock - c.dimpinjam;
+
+--Pasang triger untuk kedepannya pengurangan stock buku
+DELIMITER $$
+
+CREATE TRIGGER reduce_stock_on_borrow
+AFTER INSERT ON borrow
+FOR EACH ROW
+
+BEGIN
+
+UPDATE books
+SET stock = stock - 1
+WHERE book_id = NEW.book_id;
+
+END $$
+
+DELIMITER ;
+
+
+-- Menyesuaikan stock dari perubahan stock di copies
+DELIMITER $$
+
+CREATE TRIGGER copies_before_insert
+BEFORE INSERT ON copies
+FOR EACH ROW
+
+BEGIN
+
+DECLARE current_stock INT;
+
+-- Ambil stok buku sebelum dipinjam
+SELECT stock INTO current_stock
+FROM books
+WHERE book_id = NEW.book_id;
+
+-- Set stock_before & stock_after otomatis
+SET NEW.stock_before = current_stock;
+SET NEW.stock_after = current_stock - NEW.dimpinjam;
+
+END $$
+
+CREATE TRIGGER copies_after_insert
+AFTER INSERT ON copies
+FOR EACH ROW
+BEGIN
+-- Update stok buku agar mengikuti stock_after (hasil peminjaman)
+UPDATE books
+SET stock = NEW.stock_after
+WHERE book_id = NEW.book_id;
+END $$
+
+DELIMITER ;
+
+
+-- Read 
+
+SELECT nama_panggilan
+FROM users
+WHERE provinsi = DIY; 
+
+SELECT book_id, judul, stock, kondisi
+FROM books
+WHERE bisa_dipinjam = 'ya' AND stock > 0;
+
+SELECT b.borrow_id, b.issue_date, b.due_date, bk.judul, b.kondisi_after
+FROM borrow b
+JOIN books bk ON b.book_id = bk.book_id
+WHERE b.user_id = 3;
+
+-- Delete 
+Delete from books_author
+where book_id = 3;
+
+
